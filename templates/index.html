@@ -1,91 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title> Port Scanner</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <title>Port Scanner</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/png" href="/static/favicon.png">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav>
-        <h1>☠ PORT SCANNER ☠</h1>
-    </nav>
-    <!-- Description -->
+<nav>
+  <div class="nav-logo">
+    <h1> PORT SCANNER </h1>
+  </div>
+</nav>
+
 <section class="description">
-    <h2>About This Tool</h2>
-    <p>
-        Matrix Port Scanner is a web-based ethical hacking tool that allows users to scan a target IP address for open and closed ports within a specified range. 
+  <h2>About This Tool</h2>
+  <p>
+         Port Scanner is a web-based ethical hacking tool that allows users to scan a target IP address for open and closed ports within a specified range. 
         Built using Python, Flask, HTML, CSS, and JavaScript, it is a lightweight and powerful scanner for security learners and professionals. 
         <br><br>
         ⚠️ <strong>Note:</strong> This tool is for educational and authorized use only. Never scan IPs you do not own or have permission to test.
     </p>
 </section>
 
+<div class="container">
+  <form onsubmit="startScan(); return false;">
+    <input type="text" id="ip" placeholder="Enter IP Address" required>
+    <input type="number" id="start_port" placeholder="Start Port" required>
+    <input type="number" id="end_port" placeholder="End Port" required>
+    <button type="submit"> Scan Now</button>
+  </form>
+  <div id="result"></div>
+</div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <form id="scanForm">
-            <input type="text" id="ip" placeholder="Enter IP Address" required>
-            <input type="number" id="start_port" placeholder="Start Port" required>
-            <input type="number" id="end_port" placeholder="End Port" required>
-            <button type="submit">Scan Now</button>
-        </form>
-        <div id="result"></div>
-    </div>
-    <!-- GitHub Link Section -->
 <section class="socials">
-    <h3>🔗 Visit My GitHub</h3>
-    <p>Explore more such hacker-style projects and tools:</p>
-    <div class="icons">
-        <a href="https://github.com/Nishok-Sasikumar" target="_blank" title="Visit GitHub">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub">
-        </a>
-    </div>
+  <h3>🔗 Connect With Me</h3>
+  <p>Explore more tools and connect professionally:</p>
+  <div class="icons">
+  <a href="https://github.com/Nishok-Sasikumar" target="_blank" title="GitHub">
+    <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub">
+  </a>
+
+  <!-- Glowing divider -->
+  <div class="divider"></div>
+
+  <a href="https://www.linkedin.com/in/nishok-s-0b76b2291/" target="_blank" title="LinkedIn">
+    <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn">
+  </a>
+</div>
+
 </section>
 
 
-    <!-- Footer -->
-    <footer>
-        &copy; 2025 Nishok S | Ethical Hacking Project | #HACKTHEPLANET
-    </footer>
+<footer>
+   Port Scanner. Built by Nishok S
+</footer>
 
-    <!-- Script -->
-    <script>
-        document.getElementById('scanForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+<script>
+function startScan() {
+  const ip = document.getElementById("ip").value;
+  const start_port = document.getElementById("start_port").value;
+  const end_port = document.getElementById("end_port").value;
 
-            const ip = document.getElementById('ip').value;
-            const start_port = document.getElementById('start_port').value;
-            const end_port = document.getElementById('end_port').value;
+  document.getElementById("result").innerHTML = "<p style='color:#00ffcc;'>🔍 Scanning...</p>";
 
-            document.getElementById('result').innerHTML = '<p>Scanning, please wait...</p>';
-
-            fetch('/scan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ip, start_port, end_port })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('result');
-                if (data.ports.length > 0) {
-                    let list = '<h3>Port Scan Result:</h3><ul>';
-                    data.ports.forEach(p => {
-                        if (p.status === 'open') {
-                            list += `<li style="color: #00ff00;">✅ Port ${p.port} is OPEN</li>`;
-                        } else {
-                            list += `<li style="color: #ff4444;">❌ Port ${p.port} is CLOSED</li>`;
-                        }
-                    });
-                    list += '</ul>';
-                    resultDiv.innerHTML = list;
-                } else {
-                    resultDiv.innerHTML = "<p>No ports scanned.</p>";
-                }
-            });
-        });
-    </script>
+  fetch('/scan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ip, start_port, end_port })
+  })
+  .then(response => {
+    if (!response.ok) return response.json().then(err => { throw err });
+    return response.json();
+  })
+  .then(data => {
+    let html = "<h3>Scan Results:</h3><ul>";
+    data.ports.forEach(p => {
+      const color = p.status === "open" ? "#00ff00" : "#ff4444";
+      const icon = p.status === "open" ? "✅" : "❌";
+      html += `<li style="color:${color};">${icon} Port ${p.port} is ${p.status.toUpperCase()}</li>`;
+    });
+    html += "</ul>";
+    document.getElementById("result").innerHTML = html;
+  })
+  .catch(err => {
+    document.getElementById("result").innerHTML = `<p style="color:red;">❌ Error: ${err.error}</p>`;
+  });
+}
+</script>
 
 </body>
 </html>

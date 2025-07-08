@@ -132,6 +132,9 @@ form button:hover {
   text-shadow: 0 0 6px #00ffcc;
 }
 
+
+
+
 /* ===== GitHub Section ===== */
 .socials {
   text-align: center;
@@ -156,6 +159,7 @@ form button:hover {
 
 .socials .icons a {
   display: inline-block;
+  margin: 0 10px;
   transition: transform 0.2s ease-in-out;
 }
 
@@ -168,6 +172,21 @@ form button:hover {
 .socials .icons a:hover {
   transform: scale(1.15);
 }
+.icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.divider {
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, #00ffcc, #007777);
+  box-shadow: 0 0 8px #00ffee;
+  border-radius: 2px;
+}
+
 
 /* ===== Footer ===== */
 footer {
